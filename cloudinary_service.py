@@ -46,4 +46,41 @@ def upload_photos_in_folder():
   print(f"{counter} files successfully uploaded at {dt.now()}")
   print(f"Uploaded completed in at {end_time - start_time} mins")
 
-upload_photos_in_folder()
+def get_all_tags():
+  print("Fetching all media tags...")
+  all_tags = []
+  tags = cloudinary.api.tags(max_result=100)
+  all_tags.extend(tags['tags'])
+  next_cursor = tags.get('next_cursor')
+  while next_cursor:
+    tags = cloudinary.api.tags(max_result=100, next_cursor=next_cursor)
+    all_tags.extend(tags['tags'])
+    next_cursor = tags.get('next_cursor')
+  return(all_tags)
+
+def search_img():
+  response = cloudinary.Search().expression(
+    "resource_type:image AND tags=tree"
+  ).sort_by("public_id", "desc").execute()
+  return response
+
+
+images = search_img()
+print(images['total_count'])
+for image in images['resources']:
+  print(image['url'])
+
+def get_images_with_tags():
+  all_resources = []
+  response = cloudinary.api.resources(
+    type="upload",
+    resource_type="image",
+    prefix="my_photo_uploads",
+    tags=True,
+    max_result=100
+  )
+  all_resources.extend(response['resources'])
+  next_cursor = 
+  print(response)
+
+get_images_with_tags()
