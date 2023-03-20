@@ -65,10 +65,10 @@ def search_img():
   return response
 
 
-images = search_img()
-print(images['total_count'])
-for image in images['resources']:
-  print(image['url'])
+# images = search_img()
+# print(images['total_count'])
+# for image in images['resources']:
+#   print(image['url'])
 
 def get_images_with_tags():
   all_resources = []
@@ -80,7 +80,19 @@ def get_images_with_tags():
     max_result=100
   )
   all_resources.extend(response['resources'])
-  next_cursor = 
-  print(response)
+  next_cursor = response.get('next_cursor')
+  while next_cursor:
+    response = cloudinary.api.resources(
+      type="upload",
+      resource_type="image",
+      prefix="my_photo_uploads",
+      tags=True,
+      max_result=100,
+      next_cursor=next_cursor
+    )
+    all_resources.extend(response['resources'])
+    next_cursor = response.get('next_cursor')
+  return all_resources
 
-get_images_with_tags()
+# images = get_images_with_tags()
+# print(len(images))
